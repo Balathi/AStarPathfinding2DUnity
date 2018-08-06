@@ -2,9 +2,10 @@
 using UnityEngine;
 
 public class Pathfinder : MonoBehaviour {
-    public Grid grid;
+    public Grid Grid;
     public Transform StartPos;
     public Transform EndPos;
+    public Agent Agent;
 
 
     private void Update()
@@ -17,8 +18,8 @@ public class Pathfinder : MonoBehaviour {
 
     private void FindPath(Vector3 startPosPosition, Vector3 endPosPosition)
     {
-        var startNode = grid.GetNode(startPosPosition);
-        var endNode = grid.GetNode(endPosPosition);
+        var startNode = Grid.GetNode(startPosPosition);
+        var endNode = Grid.GetNode(endPosPosition);
         var nodes = new List<Node> {startNode};
         var checkedNodes = new HashSet<Node>();
         while (nodes.Count > 0)
@@ -32,7 +33,7 @@ public class Pathfinder : MonoBehaviour {
                 FindFinalPath(startNode, endNode);
                 break;
             }
-            foreach (var node in grid.GetNighbours(currentNode))
+            foreach (var node in Grid.GetNighbours(currentNode))
             {
                 if (node.isWall || checkedNodes.Contains(node)) continue;
                 nodes.Add(SetCosts(node, currentNode, endNode));
@@ -81,6 +82,7 @@ public class Pathfinder : MonoBehaviour {
             currentNode = currentNode.Parent;
         }
         finalPath.Reverse();
-        grid.FinalPath = finalPath;
+        Grid.FinalPath = finalPath;
+        Agent.FinalPath = finalPath;
     }
 }
