@@ -7,19 +7,16 @@ public class Pathfinder : MonoBehaviour {
     public Transform EndPos;
     public Agent Agent;
 
-
     private void Update()
     {
-        if (!StartPos.hasChanged && !EndPos.hasChanged) return;
         FindPath(StartPos.position, EndPos.position);
-        StartPos.hasChanged = false;
-        EndPos.hasChanged = false;
     }
 
     private void FindPath(Vector3 startPosPosition, Vector3 endPosPosition)
     {
         var startNode = Grid.GetNode(startPosPosition);
         var endNode = Grid.GetNode(endPosPosition);
+        if (endNode.isWall) return;
         var nodes = new List<Node> {startNode};
         var checkedNodes = new HashSet<Node>();
         while (nodes.Count > 0)
@@ -40,7 +37,6 @@ public class Pathfinder : MonoBehaviour {
             }
         }
     }
-
 
     private static Node FindBestNode(IList<Node> nodes)
     {
@@ -83,6 +79,17 @@ public class Pathfinder : MonoBehaviour {
         }
         finalPath.Reverse();
         Grid.FinalPath = finalPath;
-        Agent.FinalPath = finalPath;
+        Agent.Points = getVectorList(finalPath);
+    }
+
+    private List<Vector3> getVectorList(List<Node> finalPath)
+    {
+        var vectors = new List<Vector3>();
+        foreach (var node in finalPath)
+        {
+            vectors.Add(node.Pos);
+        }
+
+        return vectors;
     }
 }
